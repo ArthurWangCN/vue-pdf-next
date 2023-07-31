@@ -1,17 +1,14 @@
-import type { App } from 'vue'
-import PdfViewer from "./PdfViewer.vue";
+// import type { Plugin } from 'vue'
+// import PdfViewer from "./PdfViewer.vue";
 
-// 定义 install 方法
-const install = (app: App): void => {
-  app.component('pdf', PdfViewer)
-}
+// export const VuePDFPlugin: Plugin = {
+//   install(Vue) {
+//     Vue.component('pdf', PdfViewer)
+//   },
+// }
 
-export {
-  PdfViewer
-}
+// console.log(VuePDFPlugin)
 
-const pdf = {
-  install
-}
+// export default VuePDFPlugin
 
-export default pdf;
+export { default as VuePDF } from './PdfViewer.vue'

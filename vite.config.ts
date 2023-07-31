@@ -8,7 +8,7 @@ export default defineConfig({
   build: {
     lib: { // 构建为库。如果指定了 build.lib，build.cssCodeSplit 会默认为 false。
       // __dirname的值是vite.config.ts文件所在目录
-      entry: resolve(__dirname, 'src/components/index.ts'),  // entry是必需的，因为库不能使用HTML作为入口。
+      entry: resolve(__dirname, 'package/index.ts'),  // entry是必需的，因为库不能使用HTML作为入口。
       name: 'pdf', // 暴露的全局变量
       fileName: 'vue-pdf-next' // 输出的包文件名，默认是package.json的name选项
     },
