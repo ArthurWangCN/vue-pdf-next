@@ -11,7 +11,6 @@
 <script setup lang="ts">
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.js';
 import { PDFViewer, EventBus } from 'pdfjs-dist/web/pdf_viewer';
-import 'pdfjs-dist/web/pdf_viewer.css';
 import { onMounted, ref, shallowRef, watch } from 'vue';
 import 'pdfjs-dist/legacy/build/pdf.worker.entry.js';
 // @ts-ignore
@@ -22,10 +21,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.bootcdn.net/ajax/libs/pdf.
 
 import { useEventListener, useDebounceFn } from '@vueuse/core';
 
-// const url =
-//   'https://res.dafenqi.law/work-wechat-prod/vinci-contract/wp0MYzDwAADLjlKPTLEyv0BLukV7_jMA/20230725/97ad7a60a8de4961889f5321d057ace9.pdf';
-// const url =
-//   "https://res.dafenqi.law/work-wechat-prod/vinci-contract/wp0MYzDwAADLjlKPTLEyv0BLukV7_jMA/20230725/174a4c9e0dfa42b0bb0641fc1c34d87f.pdf";
 // const numPages = ref(1);
 const CMAP_URL = '/pdfjs/web/cmaps/';
 const DEFAULT_CANVAS_WIDTH = 793;

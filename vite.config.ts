@@ -1,10 +1,16 @@
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import copyPlugin from 'rollup-plugin-copy'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    copyPlugin({
+      targets: [{ src: 'types/*', dest: 'public' }], // 将文件复制到 public 目录下, vite会自动复制到dist目录
+    }),
+  ],
   build: {
     lib: { // 构建为库。如果指定了 build.lib，build.cssCodeSplit 会默认为 false。
       // __dirname的值是vite.config.ts文件所在目录

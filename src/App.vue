@@ -3,7 +3,8 @@ import { ref } from 'vue'
 // import pdf from '../package/index';
 import pdf from 'vue-pdf-next';
 
-const url = ref('https://res.dafenqi.law/work-wechat-prod/vinci-contract/wp0MYzDwAADLjlKPTLEyv0BLukV7_jMA/20230725/97ad7a60a8de4961889f5321d057ace9.pdf')
+// const url = ref('https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf');
+const url = ref('https://arkokoley.github.io/pdfvuer/nationStates.pdf');
 
 console.log(pdf)
 </script>
