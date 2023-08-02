@@ -2,11 +2,13 @@ import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import copyPlugin from 'rollup-plugin-copy'
+import libCss from 'vite-plugin-libcss';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
+    libCss(),
     copyPlugin({
       targets: [{ src: 'types/*', dest: 'public' }], // 将文件复制到 public 目录下, vite会自动复制到dist目录
     }),

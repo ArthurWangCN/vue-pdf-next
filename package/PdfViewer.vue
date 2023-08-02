@@ -18,6 +18,7 @@ import 'pdfjs-dist/legacy/build/pdf.worker.entry.js';
 // pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 // pdfjsLib.GlobalWorkerOptions.workerSrc = window.pdfjsWorker;
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.bootcdn.net/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js'
+import "./styles/pdf_viewer.css";
 
 import { useEventListener, useDebounceFn } from '@vueuse/core';
 

@@ -1,7 +1,8 @@
 {
   "name": "vue-pdf-next",
+  "sideEffects": false,
   "private": false,
-  "version": "0.0.13",
+  "version": "0.0.16",
   "type": "module",
   "types": "./dist/vue-pdf-next.d.ts",
   "main": "./dist/vue-pdf-next.js",
@@ -24,7 +25,7 @@
     "@vueuse/core": "^8.1.2",
     "pdfjs-dist": "^2.16.105",
     "vue": "^3.3.4",
-    "vue-pdf-next": "^0.0.13"
+    "vue-pdf-next": "^0.0.16"
   },
   "devDependencies": {
     "@types/node": "^20.4.5",
@@ -32,6 +33,7 @@
     "rollup-plugin-copy": "^3.4.0",
     "typescript": "^5.0.2",
     "vite": "^4.4.5",
+    "vite-plugin-libcss": "^1.1.1",
     "vue-tsc": "^1.8.5"
   },
   "description": "基于vite+vue3+pdfjs的pdf预览插件",
