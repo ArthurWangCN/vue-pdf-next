@@ -1,0 +1,8 @@
+# eslint 忽略检查
+node_modules
+dist
+iconfont.js
+components.d.ts
+public
+src/assets
+src/views/private-database/file-list-virtualize.vue

@@ -1,4 +1,3 @@
-import PdfViewer from './PdfViewer.vue'
+import PdfViewer from "./PdfViewer.vue";
 
-export default PdfViewer
-
+export default PdfViewer;
