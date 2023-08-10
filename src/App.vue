@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-// import pdf from '../package/index';
+import pdf from '../package/index';
 // import pdf from '../dist/vue-pdf-next.js';
-import pdf from 'vue-pdf-next';
+// import pdf from 'vue-pdf-next';
 
 // const url = ref('https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf');
 const url = ref('https://arkokoley.github.io/pdfvuer/nationStates.pdf');
