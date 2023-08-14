@@ -5,4 +5,3 @@ iconfont.js
 components.d.ts
 public
 src/assets
-src/views/private-database/file-list-virtualize.vue

@@ -3,7 +3,7 @@
     <div class="page-jumper">
       <img
         :src="IconArrowDown"
-        class="page-prev"
+        class="page-prev page-jumper-button"
         title="上一页"
         alt="上一页"
         @click="handlePageJumpPrev"
@@ -15,13 +15,21 @@
       / <span>{{ pageTotal }}</span>
       <img
         :src="IconArrowDown"
-        class="page-next"
+        class="page-next page-jumper-button"
         title="下一页"
         alt="下一页"
         @click="handlePageJumpNext"
       />
     </div>
+    <toolbar-zoom
+      :scale="pageScale"
+      @zoom-out="handlePageZoomOut"
+      @zoom-in="handlePageZoomIn"
+      @zoom-change="handlePageZoomChange"
+    ></toolbar-zoom>
   </div>
+  <div id="thumbnailView"></div>
+  <div id="thumbnail-container"></div>
   <div class="pdf-viewer">
     <div ref="containerRef" class="pdf-viewer__container">
       <div className="pdfViewer pdfjs-viewer"></div>
@@ -32,7 +40,7 @@
 <script setup lang="ts">
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.js";
 import { PDFViewer, EventBus } from "pdfjs-dist/web/pdf_viewer";
-import { onMounted, ref, shallowRef, watch } from "vue";
+import { onMounted, ref, shallowRef, watch, computed, Ref } from "vue";
 import "pdfjs-dist/legacy/build/pdf.worker.entry.js";
 // @ts-ignore
 // import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
@@ -45,6 +53,9 @@ import { useEventListener, useDebounceFn, useThrottleFn } from "@vueuse/core";
 
 import { ElInput } from "element-plus";
 import IconArrowDown from "./assets/images/arrow-down.svg";
+
+import ToolbarZoom from "./components/toolbar-zoom.vue";
+import "element-plus/dist/index.css";
 
 const CMAP_URL = "/pdfjs/web/cmaps/";
 const DEFAULT_CANVAS_WIDTH = 793;
@@ -123,6 +134,7 @@ const initPdf = async () => {
     eventBus,
     // @ts-ignore
     linkService: undefined,
+    l10n: null,
   });
   // console.log('🚀 ~ file: App.vue:46 ~ onMounted ~ pdfViewer:', pdfViewer);
   const loadingTask = pdfjsLib.getDocument({
@@ -131,12 +143,16 @@ const initPdf = async () => {
     cMapPacked: true,
   });
   const pdf = await loadingTask.promise;
-  getTextFromPDF(pdf);
+  // getTextFromPDF(pdf);
   console.log(">>>", pdf);
   pdfObj.value.setDocument(pdf);
   console.log(pdfObj.value);
 };
 
+/**
+ * 获取所有文本
+ * @param pdfDoc
+ */
 function getTextFromPDF(pdfDoc: any) {
   const numPages = pdfDoc.numPages;
   let fullText = "";
@@ -163,9 +179,41 @@ function getTextFromPDF(pdfDoc: any) {
   }
 }
 
-// 滚动设置回显页数
+/**
+ * 获取pdf文件缩略图
+ * @param pdf
+ */
+function getPdfThumbnail(pdf: any) {
+  const thumbnailContainer = document.getElementById("thumbnail-container");
+
+  for (let pageNum = 1; pageNum <= 5; pageNum++) {
+    pdf.getPage(pageNum).then((page) => {
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      const viewport = page.getViewport({ scale: 0.5 });
+
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+
+      const renderContext = {
+        canvasContext: context,
+        viewport: viewport,
+      };
+
+      // 渲染缩略图
+      page.render(renderContext).promise.then(() => {
+        thumbnailContainer?.appendChild(canvas);
+      });
+    });
+  }
+}
+
+/**
+ * 页面滚动节流
+ */
 const throttledScrollHandler = useThrottleFn(() => {
-  pageNumber.value = pdfObj.value.currentPageNumber;
+  // 滚动设置回显页数
+  pageNumber.value = currentValidPage.value = pdfObj.value.currentPageNumber;
 }, 200);
 
 onMounted(() => {
@@ -182,6 +230,42 @@ watch(
     initPdf();
   },
 );
+
+const pageScale: Ref<number | string> = ref(1);
+/**
+ * 页面缩小
+ */
+const handlePageZoomOut = () => {
+  if (!pdfObj.value) return;
+  if (pdfObj.value?.currentScale && pdfObj.value?.currentScale > 0.1) {
+    pdfObj.value.currentScale = pageScale.value = (
+      pdfObj.value.currentScale - 0.1
+    ).toFixed(2);
+  }
+};
+/**
+ * 页面放大
+ */
+const handlePageZoomIn = () => {
+  if (!pdfObj.value) return;
+  if (pdfObj.value?.currentScale) {
+    pdfObj.value.currentScale = pageScale.value = (
+      pdfObj.value.currentScale + 0.1
+    ).toFixed(2);
+  }
+  console.log(pdfObj.value.currentScale);
+};
+/**
+ * 页面下拉选择缩放比例
+ * @param val 缩放数值
+ */
+const handlePageZoomChange = (val: number) => {
+  if (!pdfObj.value) return;
+  if (pdfObj.value?.currentScale) {
+    pdfObj.value.currentScale = pageScale.value = val;
+  }
+};
+
 const getPageScale = (canvasWidth: number, boxWidth: number) => {
   canvasWidth = canvasWidth || DEFAULT_CANVAS_WIDTH;
   boxWidth = boxWidth || document.querySelector(".pdf-viewer")!.clientWidth;
@@ -189,19 +273,20 @@ const getPageScale = (canvasWidth: number, boxWidth: number) => {
   return ratio;
 };
 
-useEventListener(window, "resize", () => {
-  handleResize();
-});
-const handleResize = useDebounceFn(() => {
-  pdfObj.value.currentScale = getPageScale(
-    canvasWidth.value,
-    document.querySelector(".pdf-viewer")!.clientWidth,
-  );
-}, 300);
+// useEventListener(window, "resize", () => {
+//   handleResize();
+// });
+// const handleResize = useDebounceFn(() => {
+//   pdfObj.value.currentScale = getPageScale(
+//     canvasWidth.value,
+//     document.querySelector(".pdf-viewer")!.clientWidth,
+//   );
+// }, 300);
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .pdf-toolbar {
+  background-color: #f9f9fa;
   .page-jumper {
     display: flex;
     align-items: center;
@@ -214,10 +299,17 @@ const handleResize = useDebounceFn(() => {
       cursor: pointer;
       margin-left: 8px;
     }
-    .el-input__inner {
+    :deep(.el-input__inner) {
       width: 40px;
       text-align: right;
       font-size: 16px;
+    }
+    .page-jumper-button {
+      padding: 4px;
+      border-radius: 4px;
+      &:hover {
+        background-color: #dddedf;
+      }
     }
   }
 }
